@@ -10,11 +10,16 @@ Global with sharing class AccountService {
         AggregateResult[] totalCA = [SELECT AccountId, SUM(TotalAmount) sum FROM Order WHERE 
              AccountId IN :setAccountIds and status='Ordered' GROUP BY AccountId];
 
-        Decimal amount = (Decimal)totalCA[0].get('sum');
+        
 
         if(totalCA != null && totalCA.size()>0){
         for(Account a : accts){
+
+            Decimal amount = (Decimal)totalCA[0].get('sum');
+            a.Chiffre_d_affaire__c = (a.Chiffre_d_affaire__c!=null)?a.Chiffre_d_affaire__c:0;
+
             a.chiffre_d_affaire__c = a.chiffre_d_affaire__c + amount;
+
             }
         }
     }

@@ -17,13 +17,23 @@ private class TestUpdateAccountCA {
         );
         Insert pbe;
 
-        Order o1 = new Order(AccountId = acc1.Id, Status = 'Draft', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id);
+        Order o1 = new Order(AccountId = acc1.Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id);
         insert o1;
 
         OrderItem oi1 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 150);
         insert oi1;
         OrderItem oi2 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=20, UnitPrice = 1000);
-        insert oi2;        
+        insert oi2; 
+        
+        Test.startTest();
+
+        List<Account> accts = new List<Account>();
+        accts.add(acc1);
+        AccountService.UpdateChiffreAffaire(accts);
+
+        Test.stopTest();
+
+        System.assertEquals(acc1.chiffre_d_affaire__c, 21500);
     }
 
 }
