@@ -6,7 +6,6 @@ global class UpdateAllAccounts implements Database.Batchable<sObject>{
     }
      
     global void execute(Database.BatchableContext info, List<Account> scope){
-        //Set<Id> setAccountIds = (new Map<Id,SObject>(scope)).keySet();
         AccountService.updateChiffreAffaire(scope);
     }    
      
