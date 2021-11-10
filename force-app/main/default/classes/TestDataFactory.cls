@@ -27,9 +27,9 @@ public with sharing class TestDataFactory {
         return pbe;
     }
 
-    public static Order createTestOrder(OrderId ordId, PricebookEntryId pbId, decimal quantity, decimal unitPrice){
+    public static void createTestOrder(){
 
-        OrderId ordId = ordId;
+
 
 
         /*

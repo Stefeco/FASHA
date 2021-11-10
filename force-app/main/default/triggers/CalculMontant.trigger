@@ -11,7 +11,7 @@ trigger CalculMontant on Order (before update) {
     }
 
 	List<Order> ord = [SELECT Id, TotalAmount, shipmentCost__c FROM Order WHERE Id IN :setOrderIds];
-	AccountService.CalculateNetAmount(ord);
+	AccountService.calculateNetAmount(ord);
 }
 
 
