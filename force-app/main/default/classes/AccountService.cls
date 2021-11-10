@@ -1,14 +1,15 @@
 Global with sharing class AccountService {
-    public static void UpdateChiffreAffaire(List<Account> accts) {
+    public static void UpdateTurnover(List<Account> accts) {
 
+        //création d'un set vide pour les ids et noms de comptes
         set<Id> setAccountIds = new set<Id>();
 
-        //on boucle sur tous les comptes et on crée un set avec l'Id
+        //on boucle sur les comptes de la liste passée en argument (du trigger updateAccountCA) et on crée un set avec l'Id
         for(Account a : accts){
             setAccountIds.add(a.Id);
         }
 
-        // on sélection dans un aggrégat la somme de tous les ordres de chaque compte et on les regroupe par AccountId
+        // on sélectionnne dans un aggrégat la somme de tous les ordres de chaque compte et on les regroupe par AccountId
         AggregateResult[] totalCA = [SELECT AccountId, SUM(TotalAmount) sum FROM Order WHERE 
              AccountId IN :setAccountIds and status='Ordered' GROUP BY AccountId];
 
@@ -25,8 +26,28 @@ Global with sharing class AccountService {
 
             //la somme des ordres par compte "amount" est ajoutée au chiffre d'affaire.
             a.chiffre_d_affaire__c = a.chiffre_d_affaire__c + amount;
-
             }
         }
+        //11-10 stef -> ajout update accts pour mise à jour des comptes
+        update accts;
+    }
+
+
+    public static void calculateNetAmount(List<Order>ord){
+
+        set<Id> setOrderIds = new set<Id>();
+
+        for(Order o: ord){
+            setOrderIds.add(o.Id);
+            }
+
+        List<Order> orderAmount = [SELECT AccountId, TotalAmount, shipmentCost__c, NetAmount__c FROM Order WHERE AccountId IN :setOrderIds];
+
+        if(orderAmount != null && orderAmount.size()>0){
+            for(Order o : ord){
+                o.NetAmount__c = o.TotalAmount - o.shipmentCost__c;
+                }
+            }
+        update ord;
     }
 }

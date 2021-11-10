@@ -7,7 +7,7 @@ global class UpdateAllAccounts_Batch implements Database.Batchable<sObject>{
          
         global void execute(Database.BatchableContext info, List<Account> scope){
             //appel de la méthode UpdateChiffreAffaire de la classe service AccountService en passant la liste des comptes sélectionnés en argument
-            AccountService.UpdateChiffreAffaire(scope);   
+            AccountService.UpdateTurnover(scope);   
     
         }    
          

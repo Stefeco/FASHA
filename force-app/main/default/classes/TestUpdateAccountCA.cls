@@ -1,23 +1,10 @@
 @isTest
 private class TestUpdateAccountCA {
-    @isTest(seeallData = true) static void test() {
+    @isTest(seeallData = true) static void testCalculateTurnover() {
 
-        //Création du compte
-        Account acc1 = new Account(Name = 'Test Account 1');
-        insert acc1;
-
-        //Création du produit
-        Product2 pd1 = new Product2(Name = 'Chemise Verte longue XYX', Family = 'Chemise');
-        insert pd1;
- 
-        //Creation du PricebookEntry
-        PricebookEntry pbe = new PricebookEntry(
-            Pricebook2Id = Test.getStandardPricebookId(),
-            Product2Id = pd1.Id,
-            UnitPrice = 1020,
-            IsActive = true
-        );
-        Insert pbe;
+        Account acc1 = TestDataFactory.createTestAccount('test account 1');
+        Product2 pd1 = TestDataFactory.createTestProduct('chemise verte longue', 'Chemise');
+        PricebookEntry pbe = TestDataFactory.createTestPriceBookEntry(pd1);
 
         //Insertion d'un nouvel ordre
         Order o1 = new Order(AccountId = acc1.Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id);
@@ -35,12 +22,35 @@ private class TestUpdateAccountCA {
         List<Account> accts = new List<Account>();
         accts.add(acc1);
         //appel de la méthode de service
-        AccountService.UpdateChiffreAffaire(accts);
+        AccountService.UpdateTurnover(accts);
 
         Test.stopTest();
 
         //On vérifie que le chiffre d'affaire est correctement calculé
-        System.assertEquals(acc1.chiffre_d_affaire__c, 21500);
+        System.assertEquals(acc1.chiffre_d_affaire__c, 21500,'Le chiffre d\'affaire mis à jour n\'est pas correct');
     }
 
+    @isTest(seeallData=true) static void testCalculateNetAmount(){
+
+        Account acc1 = TestDataFactory.createTestAccount('test account NetAmountCalc');
+        Product2 pd1 = TestDataFactory.createTestProduct('chemise verte longue', 'Chemise');
+        PricebookEntry pbe = TestDataFactory.createTestPriceBookEntry(pd1);
+
+        Order o1 = new Order(AccountId = acc1.Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id, ShipmentCost__c = 200);
+        insert o1;
+
+        OrderItem oi1 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 100);
+        insert oi1;
+
+        Test.startTest();
+
+        List<Order> ords = new List<Order>();
+        ords.add(o1);
+
+        AccountService.calculateNetAmount(ords);
+
+        Test.stopTest();
+
+        System.assertEquals(o1.NetAmount__c, 800);
+    }
 }

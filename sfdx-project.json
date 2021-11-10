@@ -7,6 +7,6 @@
   ],
   "name": "FASHA",
   "namespace": "",
-  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sfdcLoginUrl": "https://sans4-dev-ed.my.salesforce.com/",
   "sourceApiVersion": "52.0"
 }
