@@ -2,55 +2,78 @@
 private class TestUpdateAccountCA {
     @isTest(seeallData = true) static void testCalculateTurnover() {
 
-        Account acc1 = TestDataFactory.createTestAccount('test account 1');
+        List<Account> acc1 = TestDataFactory.createTestAccounts(200, 'test account');
         Product2 pd1 = TestDataFactory.createTestProduct('chemise verte longue', 'Chemise');
         PricebookEntry pbe = TestDataFactory.createTestPriceBookEntry(pd1);
+        System.debug('test de taille ' + acc1.size());
+
+        insert acc1;
+        System.debug('testAccount Id after Insert : ' + acc1[0].Id);
 
         //Insertion d'un nouvel ordre
-        Order o1 = new Order(AccountId = acc1.Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id);
-        insert o1;
+        List<Order> testOrders = new List<Order>();
+        List<OrderItem> testOrderItems = new List<OrderItem>();
+        for (Account acc : acc1){
+        //System.debug('account = ' + acc.Name);
+        Order ord = new Order(AccountId = acc.Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id);
+        testOrders.add(ord);
+        //System.debug('testOrder account = ' + ord.AccountId);
+            
 
         //Insertion de deux produits dans le nouvel ordre
-        OrderItem oi1 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 150);
-        insert oi1;
-        OrderItem oi2 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=20, UnitPrice = 1000);
-        insert oi2; 
+        OrderItem oi1 = new OrderItem (OrderId = ord.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 150);
+        testOrderItems.add(oi1);
+        OrderItem oi2 = new OrderItem (OrderId = ord.Id, PricebookEntryId = pbe.Id, Quantity=20, UnitPrice = 1000);
+        testOrderItems.add(oi2);
+            }
+
+        insert testOrders;
+        System.debug('testOrders size = ' + testOrders.size());
+        System.debug('testOrderItems size = ' + testOrderItems.size());
         
+
         Test.startTest();
 
-        //on crée une liste de comptes et ajoute le compte acc1
-        List<Account> accts = new List<Account>();
-        accts.add(acc1);
-        //appel de la méthode de service
-        AccountService.UpdateTurnover(accts);
+        AccountService.UpdateTurnover(acc1);
 
         Test.stopTest();
 
         //On vérifie que le chiffre d'affaire est correctement calculé
-        System.assertEquals(acc1.chiffre_d_affaire__c, 21500,'Le chiffre d\'affaire mis à jour n\'est pas correct');
+        for(Account acc : acc1){
+        System.debug(acc1[0].chiffre_d_affaire__c);
+        System.assertEquals(acc.chiffre_d_affaire__c, 21500,'Le chiffre d\'affaire mis à jour n\'est pas correct');
+        }
     }
 
     @isTest(seeallData=true) static void testCalculateNetAmount(){
 
-        Account acc1 = TestDataFactory.createTestAccount('test account NetAmountCalc');
+        List<Account> acc1 = TestDataFactory.createTestAccounts(1, 'test account NetAmountCalc');
         Product2 pd1 = TestDataFactory.createTestProduct('chemise verte longue', 'Chemise');
         PricebookEntry pbe = TestDataFactory.createTestPriceBookEntry(pd1);
 
-        Order o1 = new Order(AccountId = acc1.Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id, ShipmentCost__c = 200);
-        insert o1;
-
-        OrderItem oi1 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 100);
-        insert oi1;
-
-        Test.startTest();
+        insert acc1;
 
         List<Order> ords = new List<Order>();
+
+        for(Account acc : acc1){
+        Order o1 = new Order(AccountId = acc.Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id, ShipmentCost__c = 200);
         ords.add(o1);
+
+        List<OrderItem> listOrds = new List<OrderItem>();
+        OrderItem oi1 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 100);
+        listOrds.add(oi1);
+            }
+
+        insert ords;
+
+        Test.startTest();
 
         AccountService.calculateNetAmount(ords);
 
         Test.stopTest();
 
+        for(Order o1 : ords){
         System.assertEquals(o1.NetAmount__c, 800);
+        }
     }
 }

@@ -1,5 +1,6 @@
 Global with sharing class AccountService {
-    public static void UpdateTurnover(List<Account> accts) {
+
+     public static void UpdateTurnover(List<Account> accts) {
 
         //création d'un set vide pour les ids et noms de comptes
         set<Id> setAccountIds = new set<Id>();
@@ -12,6 +13,7 @@ Global with sharing class AccountService {
         // on sélectionnne dans un aggrégat la somme de tous les ordres de chaque compte et on les regroupe par AccountId
         AggregateResult[] totalCA = [SELECT AccountId, SUM(TotalAmount) sum FROM Order WHERE 
              AccountId IN :setAccountIds and status='Ordered' GROUP BY AccountId];
+        System.debug('totalCA = ' + totalCA[0]);
 
         
 
@@ -21,6 +23,7 @@ Global with sharing class AccountService {
 
             //on va chercher la somme du chiffre d'affaire dans l'aggrégat totalCA
             Decimal amount = (Decimal)totalCA[0].get('sum');
+            System.debug('total = ' + amount);
             //Initialisation à 0 du chiffre d'affaire d'origine dans salesforce
             a.Chiffre_d_affaire__c = (a.Chiffre_d_affaire__c!=null)?a.Chiffre_d_affaire__c:0;
 
@@ -28,7 +31,7 @@ Global with sharing class AccountService {
             a.chiffre_d_affaire__c = a.chiffre_d_affaire__c + amount;
             }
         }
-        //11-10 stef -> ajout update accts pour mise à jour des comptes
+        
         update accts;
     }
 

@@ -1,11 +1,16 @@
 @isTest
 public with sharing class TestDataFactory {
     
-    public static Account createTestAccount(String name) {
+    public static List<Account> createTestAccounts(Integer acctsNum, String name) {
 
-        Account acc1 = new Account(name = name);
-        insert acc1;
-        return acc1;
+        List<Account> accts = new List<Account>();
+
+        for(integer i=0; i<acctsNum; i++){
+        Account acc1 = new Account(name = name + ' ' + i);
+        accts.add(acc1);
+        }
+        //insert accts;
+        return accts;
     }
 
     public static Product2 createTestProduct(String name, String family){
