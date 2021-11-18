@@ -27,7 +27,16 @@ private class TestUpdateAccountCA {
         testOrderItems.add(oi2);
             }
 
+        Order ord2 = new Order(AccountId = acc1[0].Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id);
+        insert ord2;
+        OrderItem oi3 = new OrderItem (OrderId = ord2.Id, PricebookEntryId = pbe.Id, Quantity = 20, UnitPrice = 50);
+        insert oi3;
+        System.debug('TotalPrice de oi3 : ' + oi3.TotalPrice);
+
         insert testOrders;
+        System.debug('unit price de oi2 : ' + testOrderItems[1].UnitPrice);
+        System.debug('Quantity de oi2 : ' + testOrderItems[1].Quantity);
+        System.debug('TotalPrice de oi2 : ' + testOrderItems[1].TotalPrice);
         System.debug('testOrders size = ' + testOrders.size());
         System.debug('testOrderItems size = ' + testOrderItems.size());
         

@@ -23,7 +23,7 @@ Global with sharing class AccountService {
 
             //on va chercher la somme du chiffre d'affaire dans l'aggrégat totalCA
             Decimal amount = (Decimal)totalCA[0].get('sum');
-            System.debug('total = ' + amount);
+            System.debug('totalAmount = ' + amount);
             //Initialisation à 0 du chiffre d'affaire d'origine dans salesforce
             a.Chiffre_d_affaire__c = (a.Chiffre_d_affaire__c!=null)?a.Chiffre_d_affaire__c:0;
 
