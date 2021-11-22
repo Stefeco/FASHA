@@ -23,7 +23,7 @@ Global with sharing class AccountService {
 
             //on va chercher la somme du chiffre d'affaire dans l'aggrégat totalCA
             Decimal amount = (Decimal)totalCA[0].get('sum');
-            System.debug('totalAmount = ' + amount);
+            //System.debug('totalAmount = ' + amount);
             //Initialisation à 0 du chiffre d'affaire d'origine dans salesforce
             a.Chiffre_d_affaire__c = (a.Chiffre_d_affaire__c!=null)?a.Chiffre_d_affaire__c:0;
 
@@ -33,24 +33,5 @@ Global with sharing class AccountService {
         }
         
         update accts;
-    }
-
-
-    public static void calculateNetAmount(List<Order>ord){
-
-        set<Id> setOrderIds = new set<Id>();
-
-        for(Order o: ord){
-            setOrderIds.add(o.Id);
-            }
-
-        List<Order> orderAmount = [SELECT AccountId, TotalAmount, shipmentCost__c, NetAmount__c FROM Order WHERE AccountId IN :setOrderIds];
-
-        if(orderAmount != null && orderAmount.size()>0){
-            for(Order o : ord){
-                o.NetAmount__c = o.TotalAmount - o.shipmentCost__c;
-                }
-            }
-        update ord;
     }
 }
