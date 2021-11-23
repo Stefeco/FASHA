@@ -3,6 +3,8 @@ private class TestCalculateNetAmount {
     
     @isTest(seeallData=true) static void testCalculateNetAmount(){
 
+
+        //création des entrées pour le test
         List<Account> acc1 = TestDataFactory.createTestAccounts(1, 'test account NetAmountCalc');
         Product2 pd1 = TestDataFactory.createTestProduct('chemise verte longue', 'Chemise');
         PricebookEntry pbe = TestDataFactory.createTestPriceBookEntry(pd1);
@@ -23,6 +25,7 @@ private class TestCalculateNetAmount {
 
         insert listOrdItems;
 
+        //exécution du test
         Test.startTest();
 
         ords[0].Description = 'description de ordre';
@@ -32,6 +35,7 @@ private class TestCalculateNetAmount {
 
         Test.stopTest();
 
+        //vérification des résultats
         System.assertEquals(order.NetAmount__c, 800);
 
     }
