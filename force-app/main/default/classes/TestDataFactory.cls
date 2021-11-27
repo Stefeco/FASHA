@@ -32,17 +32,4 @@ public with sharing class TestDataFactory {
         return pbe;
     }
 
-    public static void createTestOrder(){
-
-
-
-
-        /*
-        OrderItem oi1 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 150);
-        insert oi1;
-        OrderItem oi2 = new OrderItem (OrderId = o1.Id, PricebookEntryId = pbe.Id, Quantity=20, UnitPrice = 1000);
-        insert oi2;
-        */ 
-
-    }
 }
