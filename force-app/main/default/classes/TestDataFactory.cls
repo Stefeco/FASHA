@@ -32,4 +32,15 @@ public with sharing class TestDataFactory {
         return pbe;
     }
 
+    public static List<Order> createTestOrders(Integer ordNum, String name){
+
+        List<Order> ord = new List<Order>();
+
+        for(Integer i=0; i<ordNum ; i++){
+            Order ord1 = new Order(name = name + ' ' + i);
+            ord.add(ord1);
+        }
+        return ord;
+    }
+
 }

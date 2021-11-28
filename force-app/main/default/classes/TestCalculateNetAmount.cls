@@ -11,34 +11,43 @@ private class TestCalculateNetAmount {
 
         insert acc1;
 
-        List<Order> ords = new List<Order>();
+        //création d'une liste d'ordres via la datafactory
+        List<Order> ord1 = TestDataFactory.createTestOrders(200, 'test order');
         
-            Order o1 = new Order(AccountId = acc1[0].Id, Status = 'Ordered', EffectiveDate=Date.today(), Pricebook2Id = pbe.Pricebook2Id, ShipmentCost__c = 200);
-            ords.add(o1);
+        for(Account acc : acc1){
+            for(Order ord : ord1){
+                ord.AccountId = acc.Id;
+                ord.Status = 'Ordered';
+                ord.EffectiveDate = Date.today();
+                ord.Pricebook2Id= pbe.Pricebook2Id;
+                ord.ShipmentCost__c = 200;
+            }
+        }
 
-        insert ords;
+        insert ord1;
 
+        //création d'une liste d'orderItems
         List<OrderItem> listOrdItems = new List<OrderItem>();
 
-        OrderItem oi1 = new OrderItem (OrderId = ords[0].Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 100);
+        for(Order ord : ord1){
+        OrderItem oi1 = new OrderItem (OrderId = ord.Id, PricebookEntryId = pbe.Id, Quantity=10, UnitPrice = 100);
         listOrdItems.add(oi1);
+        }
 
         insert listOrdItems;
 
         //exécution du test
         Test.startTest();
 
-        ords[0].Description = 'description de ordre';
-        update ords[0];
-        Order order = [SELECT Id, netAmount__c FROM Order LIMIT 1];
-        System.debug('order net amount = ' + order.netAmount__c);
+        for(Order ord : ord1){
+        ord.Description = 'description de ordre';
+        }
+        update ord1;
+        Order ordSelect = [SELECT Id, netAmount__c FROM Order LIMIT 1];
 
         Test.stopTest();
 
-        //vérification des résultats
-        System.assertEquals(order.NetAmount__c, 800);
-
+        System.assertEquals(ordSelect.NetAmount__c, 800);
     }
-
 }
 

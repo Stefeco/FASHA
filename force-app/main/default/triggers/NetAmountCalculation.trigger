@@ -1,4 +1,4 @@
-trigger CalculMontant on Order (before update) {
+trigger NetAmountCalculation on Order (before update) {
 	System.debug('lancement du trigger');
 
 	//création d'un set vide contenant les noms de comptes et id
