@@ -1,11 +1,22 @@
 trigger NetAmountCalculation on Order (before update) {
 	System.debug('lancement du trigger');
 
-	//création d'un set vide contenant les noms de comptes et id
-	Set<Id> setOrderIds = new Set<Id>();
+	List<Order> ordUpdated = [SELECT Id, NetAmount__c, TotalAmount, ShipmentCost__c FROM Order
+								WHERE Id IN :trigger.new];
 
-	Order newOrder= trigger.new[0];
-	newOrder.NetAmount__c = newOrder.TotalAmount - newOrder.ShipmentCost__c;
+	System.debug('List<Order> ordUpdated = ' + ordUpdated);
+
+	for (Order ord : ordUpdated){
+		if(ord.netAmount == null){ord.netAmount = 0.0;}
+
+		ord.NetAmount__c = ord.TotalAmount - ord.ShipmentCost__c;
+
+	}
+
+	update ordUpdated;
+	
+	System.debug('trigger ord.NetAmount = ' + ordUpdated[0].NetAmount__c);
+
 }
 
 

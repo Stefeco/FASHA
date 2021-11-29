@@ -5,6 +5,8 @@ Global with sharing class AccountService {
         //création d'un set vide pour les ids et noms de comptes
         set<Id> setAccountIds = new set<Id>();
 
+        System.debug('classe de service appellée');
+
         //on boucle sur les comptes de la liste passée en argument (du trigger updateAccountCA) et on crée un set avec l'Id
         for(Account a : accts){
             setAccountIds.add(a.Id);

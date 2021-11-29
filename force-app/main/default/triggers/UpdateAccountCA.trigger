@@ -11,7 +11,6 @@ trigger UpdateAccountCA on Order (after update) {
     }
 
     List<Account> accts = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Id IN:setAccountIds];
-    System.debug('List Account accts size = ' + accts.size());
     //on remplace le calcul en dur en appelant la méthode de service
     AccountService.UpdateTurnover(accts);
 }
