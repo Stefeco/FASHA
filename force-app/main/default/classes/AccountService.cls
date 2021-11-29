@@ -5,8 +5,6 @@ Global with sharing class AccountService {
         //création d'un set vide pour les ids et noms de comptes
         set<Id> setAccountIds = new set<Id>();
 
-        System.debug('classe de service appellée');
-
         //on boucle sur les comptes de la liste passée en argument (du trigger updateAccountCA) et on crée un set avec l'Id
         for(Account a : accts){
             setAccountIds.add(a.Id);
@@ -15,7 +13,6 @@ Global with sharing class AccountService {
         // on sélectionnne dans un aggrégat la somme de tous les ordres de chaque compte et on les regroupe par AccountId
         AggregateResult[] totalCA = [SELECT AccountId, SUM(TotalAmount) sum FROM Order WHERE 
              AccountId IN :setAccountIds and status='Ordered' GROUP BY AccountId];
-        System.debug('totalCA = ' + totalCA[0]);
 
         
 

@@ -3,7 +3,6 @@ private class TestCalculateNetAmount {
     
     @isTest(seeallData=true) static void testCalculateNetAmount(){
 
-
         //création des entrées pour le test
         List<Account> acc1 = TestDataFactory.createTestAccounts(1, 'test account NetAmountCalc');
         Product2 pd1 = TestDataFactory.createTestProduct('chemise verte longue', 'Chemise');
@@ -21,11 +20,11 @@ private class TestCalculateNetAmount {
                 ord.EffectiveDate = Date.today();
                 ord.Pricebook2Id= pbe.Pricebook2Id;
                 ord.ShipmentCost__c = 200;
+                ord.NetAmount__c = 0.0;
             }
         }
 
         insert ord1;
-        //System.debug('ord1 after insert ' + ord1);OK
 
         //création d'une liste d'orderItems
         List<OrderItem> listOrdItems = new List<OrderItem>();
@@ -37,33 +36,29 @@ private class TestCalculateNetAmount {
 
         insert listOrdItems;
 
-        List<Order> ordSelect = [SELECT Id, TotalAmount, NetAmount__c, ShipmentCost__c FROM Order WHERE Id IN :ord1];
+        /*List<Order> ordSelect = [SELECT Id, TotalAmount, NetAmount__c, ShipmentCost__c FROM Order WHERE Id IN :ord1];
         System.debug('ordSelect = ' + ordSelect);
-        System.debug('TotalAmount ordSelect = ' + ordSelect[0].TotalAmount);
+        System.debug('TotalAmount ordSelect = ' + ordSelect[0].TotalAmount);*/
 
         //exécution du test
         Test.startTest();
 
-        for(Order ord : ordSelect){
+        for(Order ord : ord1){
         ord.Description = 'description de ordre';
+        //if(ord.NetAmount__c == null){ord.NetAmount__c = 0.0;}
         }
-        System.debug('ordSelect before update = ' + ordSelect);
-        system.debug('ordSelect net amount before update = ' + ordSelect[0].netAmount__c);
-        System.debug('ordSelect TotalAmount before update = ' + ordSelect[0].TotalAmount);
-        update ordSelect;
-        System.debug('ordSelect List after update ' + ordSelect);
-        System.debug('ordSelect Net Amount after update = ' + ordSelect[0].NetAmount__c);
+        System.debug('ord1 before update = ' + ord1);
+        system.debug('ord1 net amount before update = ' + ord1[0].netAmount__c);
+        System.debug('ord1 TotalAmount before update = ' + ord1[0].TotalAmount);
+        update ord1;
+        System.debug('ord1 List after update ' + ord1);
+        System.debug('ord1 Net Amount after update = ' + ord1[0].NetAmount__c);
 
         Test.stopTest();
 
-        for(Order ord : ordSelect){
-        
-        //System.assertEquals(ord.NetAmount__c, 800);
-        }
-        System.debug('ord NetAmount value = ' + ordSelect[0].netAmount__c);
-
-        //System.assertEquals(ordSelect[0].TotalAmount, 1000);
-        System.assertEquals(ordSelect[0].NetAmount__c, 800);
+        List<Order> testOrder = [SELECT Id, TotalAmount, NetAmount__c, ShipmentCost__c FROM Order WHERE Id IN :ord1 LIMIT 1];
+        system.debug('testOrder Select before assertion : ' + testOrder);
+        System.assertEquals(testOrder[0].NetAmount__c, 800);
     }
 }
 

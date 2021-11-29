@@ -10,6 +10,7 @@ trigger UpdateAccountCA on Order (after update) {
         setAccountIds.add(newOrder.AccountId);
     }
 
+
     List<Account> accts = [SELECT Id, Chiffre_d_affaire__c FROM Account WHERE Id IN:setAccountIds];
     //on remplace le calcul en dur en appelant la méthode de service
     AccountService.UpdateTurnover(accts);
