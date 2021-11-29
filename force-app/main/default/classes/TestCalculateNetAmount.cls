@@ -62,8 +62,8 @@ private class TestCalculateNetAmount {
         }
         System.debug('ord NetAmount value = ' + ordSelect[0].netAmount__c);
 
-        System.assertEquals(ordSelect[0].TotalAmount, 1000);
-        //System.assertEquals(ordSelect[0].NetAmount__c, 800);
+        //System.assertEquals(ordSelect[0].TotalAmount, 1000);
+        System.assertEquals(ordSelect[0].NetAmount__c, 800);
     }
 }
 
