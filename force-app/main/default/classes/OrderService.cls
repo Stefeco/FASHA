@@ -1,18 +1,17 @@
 Global with sharing class OrderService {
+    
+    
+    public static List<Order> CalculateNetAmount(List<Order> ords) {
 
-
-    public static List<Order> CalculateNetAmount(List<Order>ordList) {
-
-        for (Order ord : ordList){
+        for (Order ord : ords){
             if(ord.netAmount__c == null){ord.netAmount__c = 0.0;}
     
             ord.NetAmount__c = ord.TotalAmount - ord.ShipmentCost__c;
         }
     
-        System.debug('service class ordList.NetAmount = ' + ordList[0].NetAmount__c);
+        System.debug('trigger class ordList.NetAmount = ' + ords[0].NetAmount__c);
 
-        return ordList;
+        return ords;
 
     }
-
 }

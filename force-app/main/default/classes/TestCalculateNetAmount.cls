@@ -1,7 +1,7 @@
 @isTest
 private class TestCalculateNetAmount {
     
-    @isTest(seeallData=true) static void testCalculateNetAmount(){
+    @isTest(seeAllData=true) static void testCalculateNetAmount(){
 
         //création des entrées pour le test
         List<Account> acc1 = TestDataFactory.createTestAccounts(1, 'test account NetAmountCalc');
@@ -36,29 +36,28 @@ private class TestCalculateNetAmount {
 
         insert listOrdItems;
 
-        /*List<Order> ordSelect = [SELECT Id, TotalAmount, NetAmount__c, ShipmentCost__c FROM Order WHERE Id IN :ord1];
+        List<Order> ordSelect = [SELECT Id, TotalAmount, NetAmount__c, ShipmentCost__c FROM Order WHERE Id IN :ord1];
         System.debug('ordSelect = ' + ordSelect);
-        System.debug('TotalAmount ordSelect = ' + ordSelect[0].TotalAmount);*/
+        System.debug('TotalAmount ordSelect = ' + ordSelect[0].TotalAmount);
 
         //exécution du test
         Test.startTest();
 
-        for(Order ord : ord1){
+        for(Order ord : ordSelect){
         ord.Description = 'description de ordre';
         //if(ord.NetAmount__c == null){ord.NetAmount__c = 0.0;}
         }
-        System.debug('ord1 before update = ' + ord1);
-        system.debug('ord1 net amount before update = ' + ord1[0].netAmount__c);
-        System.debug('ord1 TotalAmount before update = ' + ord1[0].TotalAmount);
-        update ord1;
-        System.debug('ord1 List after update ' + ord1);
-        System.debug('ord1 Net Amount after update = ' + ord1[0].NetAmount__c);
+        System.debug('ordSelect before update = ' + ordSelect);
+        system.debug('ordSelect net amount before update = ' + ordSelect[0].netAmount__c);
+        System.debug('ordSelect TotalAmount before update = ' + ordSelect[0].TotalAmount);
+        update ordSelect;
 
         Test.stopTest();
 
-        List<Order> testOrder = [SELECT Id, TotalAmount, NetAmount__c, ShipmentCost__c FROM Order WHERE Id IN :ord1 LIMIT 1];
-        system.debug('testOrder Select before assertion : ' + testOrder);
+        List<Order> testOrder = OrderService.CalculateNetAmount(ordSelect);
+
         System.assertEquals(testOrder[0].NetAmount__c, 800);
+        
     }
 }
 
